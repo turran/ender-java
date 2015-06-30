@@ -1,11 +1,17 @@
 lib_BIN = Ender.jar
 lib_SRC = \
+$(top_srcdir)/src/lib/api/EinaAPI.java \
 $(top_srcdir)/src/lib/api/EnderAPI.java \
 $(top_srcdir)/src/lib/api/ItemAPI.java \
 $(top_srcdir)/src/lib/api/LibAPI.java \
 $(top_srcdir)/src/lib/Ender.java \
 $(top_srcdir)/src/lib/Item.java \
-$(top_srcdir)/src/lib/Lib.java
+$(top_srcdir)/src/lib/ItemBasic.java \
+$(top_srcdir)/src/lib/ItemObject.java \
+$(top_srcdir)/src/lib/ItemType.java \
+$(top_srcdir)/src/lib/ItemTransfer.java \
+$(top_srcdir)/src/lib/Lib.java \
+$(top_srcdir)/src/lib/ValueType.java
 
 lib_FLAGS = -cp /usr/share/java/jna.jar
 

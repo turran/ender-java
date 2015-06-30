@@ -1,11 +1,16 @@
 package org.ender;
 
-import org.ender.api.EnderAPI;
 import com.sun.jna.Library;
 import com.sun.jna.Native;
 
 public class Ender {
-	static final EnderAPI api = (EnderAPI) Native.loadLibrary("ender", EnderAPI.class);
+
+	private interface API extends Library {
+		void ender_init();
+		void ender_shutdown();
+	}
+
+	static final API api = (API) Native.loadLibrary("ender", API.class);
 
 	public static void init()
 	{
