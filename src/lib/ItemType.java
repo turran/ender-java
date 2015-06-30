@@ -1,7 +1,7 @@
 package org.ender;
 
-import org.ender.api.ItemAPI;
 import com.sun.jna.Native;
+import com.sun.jna.Library;
 
 public enum ItemType {
 	INVALID,
@@ -15,7 +15,11 @@ public enum ItemType {
 	ENUM,
 	DEF;
 
-	static final ItemAPI api = (ItemAPI) Native.loadLibrary("ender", ItemAPI.class);
+	public interface API extends Library {
+		String ender_item_type_name_get(ItemType type);
+	}
+
+	static final API api = (API) Native.loadLibrary("ender", API.class);
 
 	public String getName()
 	{
