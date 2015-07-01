@@ -25,4 +25,9 @@ public enum ItemType {
 	{
 		return api.ender_item_type_name_get(this);
 	}
+
+	public int getIntValue()
+	{
+		return ordinal();
+	}
 }

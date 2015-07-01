@@ -1,10 +1,11 @@
 package org.ender;
 
+import org.ender.common.Referenceable;
 import com.sun.jna.Native;
 import com.sun.jna.Pointer;
 import com.sun.jna.Library;
 
-public class Item {
+public class Item implements Referenceable {
 
 	public interface API extends Library {
 		Item ender_item_ref(Item i);
@@ -28,12 +29,14 @@ public class Item {
 			ref();
 	}
 
-	private void ref()
+	@Override
+	public void ref()
 	{
 		api.ender_item_ref(this);
 	}
 
-	private void unref()
+	@Override
+	public void unref()
 	{
 		api.ender_item_unref(this);
 	}

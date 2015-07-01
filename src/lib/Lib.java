@@ -20,7 +20,7 @@ public class Lib implements NativeMapped {
 		String ender_lib_name_get(Lib l);
 		EinaAPI.List ender_lib_dependencies_get(Lib l);
 		Item ender_lib_item_find(Lib l, String name);
-		EinaAPI.List ender_lib_item_list(Lib l, ItemType type);
+		EinaAPI.List ender_lib_item_list(Lib l, int type);
 	}
 
 	static final API api = (API) Native.loadLibrary("ender", API.class);
@@ -69,7 +69,7 @@ public class Lib implements NativeMapped {
 
 	public List<Item> listItem(ItemType type)
 	{
-		EinaAPI.List l = api.ender_lib_item_list(this, type);
+		EinaAPI.List l = api.ender_lib_item_list(this, type.getIntValue());
 		EinaAPI.List next = l;
 		List<Item> ret = new ArrayList<Item>();
 
