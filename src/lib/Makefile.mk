@@ -1,6 +1,7 @@
 lib_BIN = Ender.jar
 lib_SRC = \
 $(top_srcdir)/src/lib/api/EinaAPI.java \
+$(top_srcdir)/src/lib/common/annotations/Transfer.java \
 $(top_srcdir)/src/lib/common/EnderTypeConverter.java \
 $(top_srcdir)/src/lib/common/Referenceable.java \
 $(top_srcdir)/src/lib/Ender.java \

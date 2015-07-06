@@ -1,6 +1,11 @@
 package org.ender;
 
+import org.ender.common.EnderTypeConverter;
 import org.ender.common.Referenceable;
+
+import java.util.HashMap;
+import java.util.Map;
+
 import com.sun.jna.Native;
 import com.sun.jna.Pointer;
 import com.sun.jna.Library;
@@ -18,7 +23,11 @@ public class Item implements Referenceable {
 		boolean ender_item_is_exception(Item i);
 	}
 
-	static final API api = (API) Native.loadLibrary("ender", API.class);
+	private static final Map<String, Object> options = new HashMap<String, Object>() {{
+		put(Library.OPTION_TYPE_MAPPER, new EnderTypeConverter());
+	}};
+
+	static final API api = (API) Native.loadLibrary("ender", API.class, options);
 
 	private Pointer raw;
 
