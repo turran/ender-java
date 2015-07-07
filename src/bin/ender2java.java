@@ -23,6 +23,12 @@ public class ender2java {
 		{
 			ItemObject o = (ItemObject)objects.get(i);
 			System.out.println("Object " + o.getName());
+			ItemObject parent = o.getInherit();
+			while (parent != null)
+			{
+				System.out.println("+ " + parent.getName());
+				parent = parent.getInherit();
+			}
 		}
 
 		Ender.shutdown();

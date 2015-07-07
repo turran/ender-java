@@ -15,6 +15,7 @@ import com.sun.jna.FromNativeConverter;
 import com.sun.jna.ToNativeConverter;
 import com.sun.jna.DefaultTypeMapper;
 import com.sun.jna.MethodParameterContext;
+import com.sun.jna.MethodResultContext;
 
 public class EnderTypeConverter extends DefaultTypeMapper {
 
@@ -26,8 +27,20 @@ public class EnderTypeConverter extends DefaultTypeMapper {
 			try {
 				Pointer handle = (Pointer)arg;
 				Constructor ctor = cls.getDeclaredConstructor(Pointer.class, boolean.class);
+				boolean doRef = false;
+
+				if (ctx instanceof MethodResultContext)
+				{
+					MethodResultContext mcontext = (MethodResultContext) ctx;
+					Method method = mcontext.getMethod();
+					if (method.isAnnotationPresent(Transfer.class))
+					{
+						System.out.println("result context has transfer");
+					}
+					System.out.println("method result");
+				}
 				// call the constructor and own the ref
-				Object ret = ctor.newInstance(handle, false);
+				Object ret = ctor.newInstance(handle, doRef);
 				return ret;
 			} catch (NoSuchMethodException ex) {
 				throw new RuntimeException(ex);

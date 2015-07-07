@@ -43,6 +43,15 @@ public class Item implements ReferenceableObject {
 		return api.ender_item_name_get(this);
 	}
 
+	protected void finalize() throws Throwable
+	{
+		try {
+			System.out.println("finalizing");
+		} finally {
+			super.finalize();
+		}
+	}
+
 	@Override
 	public void ref()
 	{
