@@ -1,7 +1,7 @@
 package org.ender;
 
 import org.ender.common.EnderTypeConverter;
-import org.ender.common.Referenceable;
+import org.ender.common.ReferenceableObject;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -10,7 +10,7 @@ import com.sun.jna.Native;
 import com.sun.jna.Pointer;
 import com.sun.jna.Library;
 
-public class Item implements Referenceable {
+public class Item implements ReferenceableObject {
 
 	public interface API extends Library {
 		Item ender_item_ref(Item i);
@@ -38,6 +38,11 @@ public class Item implements Referenceable {
 			ref();
 	}
 
+	public String getName()
+	{
+		return api.ender_item_name_get(this);
+	}
+
 	@Override
 	public void ref()
 	{
@@ -48,5 +53,11 @@ public class Item implements Referenceable {
 	public void unref()
 	{
 		api.ender_item_unref(this);
+	}
+
+	@Override
+	public Pointer getHandle()
+	{
+		return this.raw;
 	}
 }

@@ -21,7 +21,8 @@ public class ender2java {
 		List<Item> objects = lib.listItem(ItemType.OBJECT);
 		for (int i = 0; i < objects.size(); i++)
 		{
-			System.out.println("Object");
+			ItemObject o = (ItemObject)objects.get(i);
+			System.out.println("Object " + o.getName());
 		}
 
 		Ender.shutdown();

@@ -3,7 +3,9 @@ package org.ender.common;
 import org.ender.common.annotations.Transfer;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
+import java.lang.reflect.InvocationTargetException;
 
 import com.sun.jna.Pointer;
 import com.sun.jna.TypeConverter;
@@ -16,14 +18,26 @@ import com.sun.jna.MethodParameterContext;
 
 public class EnderTypeConverter extends DefaultTypeMapper {
 
-	private static TypeConverter referenceableConverter = new TypeConverter() {
+	private static TypeConverter referenceableObjectConverter = new TypeConverter() {
 		public Object fromNative(Object arg, FromNativeContext ctx) {
 			if (arg == null)
 				return null;
-			// call the constructor and own the ref
 			Class cls = ctx.getTargetType();
-			System.out.println("class is " + cls);
-			return null;
+			try {
+				Pointer handle = (Pointer)arg;
+				Constructor ctor = cls.getDeclaredConstructor(Pointer.class, boolean.class);
+				// call the constructor and own the ref
+				Object ret = ctor.newInstance(handle, false);
+				return ret;
+			} catch (NoSuchMethodException ex) {
+				throw new RuntimeException(ex);
+			} catch (InstantiationException ex) {
+				throw new RuntimeException(ex);
+			} catch (IllegalAccessException ex) {
+				throw new RuntimeException(ex);
+			} catch (InvocationTargetException ex) {
+				throw new RuntimeException(ex);
+			}
 		}
 
 		public Class<?> nativeType() {
@@ -31,9 +45,10 @@ public class EnderTypeConverter extends DefaultTypeMapper {
 		}
 
 		public Object toNative(Object arg, ToNativeContext ctx) {
-			System.out.println("to native " + arg);
 			if (arg == null)
 				return null;
+
+			Pointer ret = ((ReferenceableObject)arg).getHandle();
 
 			if (ctx instanceof MethodParameterContext)
 			{
@@ -48,23 +63,23 @@ public class EnderTypeConverter extends DefaultTypeMapper {
 					}
 				}
 			}
-			return null;
+			return ret;
 		}
 	};
 
 	@Override
 	public FromNativeConverter getFromNativeConverter(Class type)
 	{
-		if (Referenceable.class.isAssignableFrom(type))
-			return referenceableConverter;
+		if (ReferenceableObject.class.isAssignableFrom(type))
+			return referenceableObjectConverter;
 		return super.getFromNativeConverter(type);
 	}
 
 	@Override
 	public ToNativeConverter getToNativeConverter(Class type)
 	{
-		if (Referenceable.class.isAssignableFrom(type))
-			return referenceableConverter;
+		if (ReferenceableObject.class.isAssignableFrom(type))
+			return referenceableObjectConverter;
 		return super.getToNativeConverter(type);
 	}
 }
