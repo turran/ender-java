@@ -1,12 +1,12 @@
 package org.ender;
 
+import org.ender.common.EnderNative;
 import org.ender.api.EinaAPI;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import com.sun.jna.Library;
-import com.sun.jna.Native;
 import com.sun.jna.FromNativeContext;
 import com.sun.jna.ToNativeContext;
 import com.sun.jna.NativeMapped;
@@ -20,10 +20,10 @@ public class Lib implements NativeMapped {
 		String ender_lib_name_get(Lib l);
 		EinaAPI.List ender_lib_dependencies_get(Lib l);
 		Item ender_lib_item_find(Lib l, String name);
-		EinaAPI.List ender_lib_item_list(Lib l, int type);
+		EinaAPI.List ender_lib_item_list(Lib l, ItemType type);
 	}
 
-	static final API api = (API) Native.loadLibrary("ender", API.class);
+	static final API api = EnderNative.loadLibrary("ender", API.class);
 
 	private Pointer handle;
 
@@ -69,7 +69,7 @@ public class Lib implements NativeMapped {
 
 	public List<Item> listItem(ItemType type)
 	{
-		EinaAPI.List l = api.ender_lib_item_list(this, type.getIntValue());
+		EinaAPI.List l = api.ender_lib_item_list(this, type);
 		EinaAPI.List next = l;
 		List<Item> ret = new ArrayList<Item>();
 

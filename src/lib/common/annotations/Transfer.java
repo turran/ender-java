@@ -1,5 +1,11 @@
 package org.ender.common.annotations;
 
+import org.ender.ItemTransfer;
+
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+
+@Retention(RetentionPolicy.RUNTIME)
 public @interface Transfer {
-	String value() default "None";
+	ItemTransfer value() default ItemTransfer.NONE;
 }

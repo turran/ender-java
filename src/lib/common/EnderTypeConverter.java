@@ -37,7 +37,7 @@ public class EnderTypeConverter extends DefaultTypeMapper {
 					{
 						System.out.println("result context has transfer");
 					}
-					System.out.println("method result");
+					System.out.println("method result " + method.getName());
 				}
 				// call the constructor and own the ref
 				Object ret = ctor.newInstance(handle, doRef);
@@ -80,11 +80,30 @@ public class EnderTypeConverter extends DefaultTypeMapper {
 		}
 	};
 
+	private static TypeConverter enumConverter = new TypeConverter() {
+		public Object fromNative(Object arg, FromNativeContext ctx) {
+			Class type = ctx.getTargetType();
+			Object[] enums = type.getEnumConstants();
+			return enums[(Integer)arg];
+		}
+
+		public Class<?> nativeType() {
+			return int.class;
+		}
+
+		public Object toNative(Object arg, ToNativeContext ctx) {
+			Enum en = (Enum)arg;
+			return en.ordinal();
+		}
+	};
+
 	@Override
 	public FromNativeConverter getFromNativeConverter(Class type)
 	{
 		if (ReferenceableObject.class.isAssignableFrom(type))
 			return referenceableObjectConverter;
+		else if (type.isEnum())
+			return enumConverter;
 		return super.getFromNativeConverter(type);
 	}
 
@@ -93,6 +112,8 @@ public class EnderTypeConverter extends DefaultTypeMapper {
 	{
 		if (ReferenceableObject.class.isAssignableFrom(type))
 			return referenceableObjectConverter;
+		else if (type.isEnum())
+			return enumConverter;
 		return super.getToNativeConverter(type);
 	}
 }
