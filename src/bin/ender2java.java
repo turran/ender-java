@@ -26,9 +26,11 @@ public class ender2java {
 			ItemObject parent = o.getInherit();
 			while (parent != null)
 			{
-				System.out.println("+ " + parent.getName());
+				//System.out.println("+ " + parent.getName());
 				parent = parent.getInherit();
 			}
+
+			List<ItemFunction> functions = o.getFunctions();
 		}
 
 		Ender.shutdown();

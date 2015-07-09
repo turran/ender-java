@@ -5,6 +5,7 @@ import org.ender.common.annotations.Transfer;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.lang.reflect.InvocationTargetException;
 
 import com.sun.jna.Pointer;
@@ -26,7 +27,7 @@ public class EnderTypeConverter extends DefaultTypeMapper {
 			Class cls = ctx.getTargetType();
 			try {
 				Pointer handle = (Pointer)arg;
-				Constructor ctor = cls.getDeclaredConstructor(Pointer.class, boolean.class);
+				Object ret = null;
 				boolean doRef = false;
 
 				if (ctx instanceof MethodResultContext)
@@ -37,10 +38,18 @@ public class EnderTypeConverter extends DefaultTypeMapper {
 					{
 						System.out.println("result context has transfer");
 					}
-					System.out.println("method result " + method.getName());
 				}
 				// call the constructor and own the ref
-				Object ret = ctor.newInstance(handle, doRef);
+				if (Modifier.isAbstract(cls.getModifiers()))
+				{
+					Method method = cls.getDeclaredMethod("downcast", Pointer.class, boolean.class); 
+					ret = method.invoke(null, handle, doRef);
+				}
+				else
+				{
+					Constructor ctor = cls.getDeclaredConstructor(Pointer.class, boolean.class);
+					ret = ctor.newInstance(handle, doRef);
+				}
 				return ret;
 			} catch (NoSuchMethodException ex) {
 				throw new RuntimeException(ex);

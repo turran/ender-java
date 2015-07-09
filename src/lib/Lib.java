@@ -78,21 +78,7 @@ public class Lib implements NativeMapped {
 		{
 			if (next.data != null)
 			{
-				Item i = null;
-				switch (type)
-				{
-					case BASIC:
-					i = new ItemBasic(next.data, true);
-					break;
-
-					case OBJECT:
-					i = new ItemObject(next.data, true);
-					break;
-
-					default:
-					break;
-				}
-
+				Item i = Item.downcast(next.data, true);
 				if (i != null)
 					ret.add(i);
 			}
