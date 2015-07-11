@@ -11,6 +11,8 @@ import java.util.List;
 import com.sun.jna.Pointer;
 import com.sun.jna.Library;
 
+import org.ender.api.EinaAPI;
+
 public class ItemObject extends Item {
 	private interface API extends Library {
 		//Eina_Bool ender_item_object_string_to(Ender_Item *i, void *o, char **str,
@@ -19,7 +21,7 @@ public class ItemObject extends Item {
 		@Transfer(ItemTransfer.FULL)
 		ItemObject ender_item_object_inherit_get(ItemObject self);
 		@Transfer(ItemTransfer.FULL)
-		List<ItemFunction> ender_item_object_functions_get(ItemObject self);
+		EinaAPI.List ender_item_object_functions_get(ItemObject self);
 		//Eina_List * ender_item_object_ctor_get(Ender_Item *i);
 		//Eina_List * ender_item_object_props_get(Ender_Item *i);
 		//Eina_Bool ender_item_object_ref(Ender_Item *i, void *o);
@@ -40,6 +42,7 @@ public class ItemObject extends Item {
 
 	public List<ItemFunction> getFunctions()
 	{
-		return api.ender_item_object_functions_get(this);
+		EinaAPI.List list = api.ender_item_object_functions_get(this);
+		return list.toList(ItemFunction.class, ItemTransfer.FULL);
 	}
 }

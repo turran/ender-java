@@ -25,41 +25,21 @@ public class EnderTypeConverter extends DefaultTypeMapper {
 			if (arg == null)
 				return null;
 			Class cls = ctx.getTargetType();
-			try {
-				Pointer handle = (Pointer)arg;
-				Object ret = null;
-				boolean doRef = false;
+			Pointer handle = (Pointer)arg;
+			Object ret = null;
+			boolean doRef = false;
 
-				if (ctx instanceof MethodResultContext)
+			if (ctx instanceof MethodResultContext)
+			{
+				MethodResultContext mcontext = (MethodResultContext) ctx;
+				Method method = mcontext.getMethod();
+				if (method.isAnnotationPresent(Transfer.class))
 				{
-					MethodResultContext mcontext = (MethodResultContext) ctx;
-					Method method = mcontext.getMethod();
-					if (method.isAnnotationPresent(Transfer.class))
-					{
-						System.out.println("result context has transfer");
-					}
+					System.out.println("result context has transfer");
 				}
-				// call the constructor and own the ref
-				if (Modifier.isAbstract(cls.getModifiers()))
-				{
-					Method method = cls.getDeclaredMethod("downcast", Pointer.class, boolean.class); 
-					ret = method.invoke(null, handle, doRef);
-				}
-				else
-				{
-					Constructor ctor = cls.getDeclaredConstructor(Pointer.class, boolean.class);
-					ret = ctor.newInstance(handle, doRef);
-				}
-				return ret;
-			} catch (NoSuchMethodException ex) {
-				throw new RuntimeException(ex);
-			} catch (InstantiationException ex) {
-				throw new RuntimeException(ex);
-			} catch (IllegalAccessException ex) {
-				throw new RuntimeException(ex);
-			} catch (InvocationTargetException ex) {
-				throw new RuntimeException(ex);
 			}
+			ret = ReferenceableObject.construct(cls, handle, doRef);
+			return ret;
 		}
 
 		public Class<?> nativeType() {

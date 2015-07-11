@@ -12,7 +12,7 @@ import java.util.Map;
 import com.sun.jna.Pointer;
 import com.sun.jna.Library;
 
-public abstract class Item implements ReferenceableObject {
+public abstract class Item extends ReferenceableObject {
 
 	public interface API extends Library {
 		Item ender_item_ref(Item i);
@@ -89,6 +89,7 @@ public abstract class Item implements ReferenceableObject {
 		return api.ender_item_lib_get(this);
 	}
 
+	@Override
 	protected void finalize() throws Throwable
 	{
 		try {

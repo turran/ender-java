@@ -31,6 +31,11 @@ public class ender2java {
 			}
 
 			List<ItemFunction> functions = o.getFunctions();
+			for (int j = 0; j < functions.size(); j++)
+			{
+				ItemFunction f = functions.get(j);
+				System.out.println("Function " + f.getName());
+			}
 		}
 
 		Ender.shutdown();
