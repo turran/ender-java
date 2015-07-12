@@ -1,9 +1,12 @@
 // To run,
-// java -cp src/bin:src/lib/:/usr/share/java/jna.jar ender2java enesim
+// java -cp src/bin:src/lib/:/usr/share/java/jna.jar:/usr/share/java/codemodel.jar ender2java enesim
 
 import org.ender.*;
 
 import java.util.List;
+import java.io.File;
+import java.io.IOException;
+import com.sun.codemodel.JCodeModel;
 
 public class ender2java {
 
@@ -17,6 +20,9 @@ public class ender2java {
 		{
 			System.out.println("Dep: " + dependencies.get(i).getName());
 		}
+
+		JCodeModel cm = new JCodeModel();
+
 		// Generate objects
 		List<Item> objects = lib.listItem(ItemType.OBJECT);
 		for (int i = 0; i < objects.size(); i++)
@@ -42,6 +48,11 @@ public class ender2java {
 			}
 		}
 
+		try {
+			cm.build(new File("."));
+		} catch (IOException ex) {
+
+		}
 		Ender.shutdown();
 	}
 }
