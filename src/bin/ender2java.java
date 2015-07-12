@@ -34,7 +34,11 @@ public class ender2java {
 			for (int j = 0; j < functions.size(); j++)
 			{
 				ItemFunction f = functions.get(j);
-				System.out.println("Function " + f.getName());
+				int flags = f.getFlags();
+				System.out.println("Function " + f.getName() + " flags " + flags);
+				//if (flags & ItemFunction.Flags.CTOR)
+				//	System.out.println("is ctor");
+				// flags.contains(ItemFunction.Flags.CTOR)
 			}
 		}
 

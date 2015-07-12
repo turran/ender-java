@@ -7,13 +7,21 @@ $(top_srcdir)/src/lib/common/EnderTypeConverter.java \
 $(top_srcdir)/src/lib/common/ReferenceableObject.java \
 $(top_srcdir)/src/lib/Ender.java \
 $(top_srcdir)/src/lib/Item.java \
+$(top_srcdir)/src/lib/ItemEnum.java \
+$(top_srcdir)/src/lib/ItemAttr.java \
+$(top_srcdir)/src/lib/ItemAttrFlag.java \
+$(top_srcdir)/src/lib/ItemArg.java \
+$(top_srcdir)/src/lib/ItemArgFlag.java \
+$(top_srcdir)/src/lib/ItemArgDirection.java \
 $(top_srcdir)/src/lib/ItemBasic.java \
 $(top_srcdir)/src/lib/ItemObject.java \
 $(top_srcdir)/src/lib/ItemFunction.java \
+$(top_srcdir)/src/lib/ItemFunctionFlag.java \
 $(top_srcdir)/src/lib/ItemType.java \
 $(top_srcdir)/src/lib/ItemTransfer.java \
 $(top_srcdir)/src/lib/Lib.java \
-$(top_srcdir)/src/lib/ValueType.java
+$(top_srcdir)/src/lib/ValueType.java \
+$(top_srcdir)/src/lib/org/eina/List.java
 
 lib_FLAGS = -cp /usr/share/java/jna.jar
 

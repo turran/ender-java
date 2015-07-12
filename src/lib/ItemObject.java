@@ -1,17 +1,12 @@
 package org.ender;
 
 import org.ender.common.EnderNative;
-import org.ender.common.EnderTypeConverter;
 import org.ender.common.annotations.Transfer;
-
-import org.ender.api.EinaAPI;
 
 import java.util.List;
 
 import com.sun.jna.Pointer;
 import com.sun.jna.Library;
-
-import org.ender.api.EinaAPI;
 
 public class ItemObject extends Item {
 	private interface API extends Library {
@@ -21,7 +16,7 @@ public class ItemObject extends Item {
 		@Transfer(ItemTransfer.FULL)
 		ItemObject ender_item_object_inherit_get(ItemObject self);
 		@Transfer(ItemTransfer.FULL)
-		EinaAPI.List ender_item_object_functions_get(ItemObject self);
+		org.eina.List ender_item_object_functions_get(ItemObject self);
 		//Eina_List * ender_item_object_ctor_get(Ender_Item *i);
 		//Eina_List * ender_item_object_props_get(Ender_Item *i);
 		//Eina_Bool ender_item_object_ref(Ender_Item *i, void *o);
@@ -42,7 +37,7 @@ public class ItemObject extends Item {
 
 	public List<ItemFunction> getFunctions()
 	{
-		EinaAPI.List list = api.ender_item_object_functions_get(this);
-		return list.toList(ItemFunction.class, ItemTransfer.FULL);
+		org.eina.List list = api.ender_item_object_functions_get(this);
+		return EnderNative.einaListToList(list, ItemFunction.class, ItemTransfer.FULL);
 	}
 }

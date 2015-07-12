@@ -1,5 +1,6 @@
 package org.ender.common;
 
+import org.ender.ItemTransfer;
 import org.ender.common.annotations.Transfer;
 
 import java.lang.annotation.Annotation;
@@ -35,7 +36,9 @@ public class EnderTypeConverter extends DefaultTypeMapper {
 				Method method = mcontext.getMethod();
 				if (method.isAnnotationPresent(Transfer.class))
 				{
-					System.out.println("result context has transfer");
+					Transfer xfer = method.getAnnotation(Transfer.class);
+					if (xfer.value() == ItemTransfer.FULL)
+						doRef = true;
 				}
 			}
 			ret = ReferenceableObject.construct(cls, handle, doRef);
