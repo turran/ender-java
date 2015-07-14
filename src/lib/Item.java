@@ -124,57 +124,30 @@ public abstract class Item extends ReferenceableObject {
 	public String getQualifiedClassName()
 	{
 		String name = getName();
-		String[] parts = name.split("\\.");
-		String prefix = parts[0];
-		int prefixIdx = 1;
+		int idx = name.lastIndexOf('.');
+		String prefix = name.substring(0, idx);
+		String className = name.substring(idx + 1, name.length());
 
-		// TODO Do a search from the right most .
-		// Find the prefix
-		while (getLib().findItem(prefix) == null && prefixIdx < parts.length - 1)
+		while (getLib().findItem(prefix) != null)
 		{
-			prefix += "." + parts[prefixIdx];
-			prefixIdx++;
+			idx = prefix.lastIndexOf('.');
+
+			String tmp = prefix;
+			prefix = tmp.substring(0, idx);
+			String newClassName = tmp.substring(idx + 1, tmp.length());
+			String oldClassName = className.substring(0, 1).toUpperCase() + className.substring(1, className.length());
+			className = newClassName + oldClassName;
 		}
 
-		// Sanitize the prefix
-		String[] prefixParts = prefix.split("\\.");
-		if (prefixParts[0].equals(getLib().getName()))
-		{
-			if (prefixParts.length > 1)
-			{
-				StringBuilder sb = new StringBuilder();
-				sb.append(prefixParts[1]);
-				for (int i = 2; i < prefixParts.length; i++)
-				{
-					sb.append(".");
-					sb.append(prefixParts[i]);
-				}
-				prefix = sb.toString();
-			}
-			else
-			{
-				prefix = null;
-			}
-		}
-
-		// Create the class name
-		StringBuilder sb = new StringBuilder();
-		sb.append(parts[prefixIdx]);
-		for (int i = prefixIdx + 1; i < parts.length; i++)
-		{
-			sb.append(".");
-			sb.append(parts[i]);
-		}
-		String className = sb.toString().toUpperCase();
-
-		System.out.println("prefix found " + prefix + " for " + name);
-		System.out.println("class found " + className);
-
-		return name;
+		className = className.substring(0, 1).toUpperCase() + className.substring(1, className.length());
+		return prefix + "." + className;
 	}
 
 	public String getClassName()
 	{
-		return null;
+		String qClassName = getQualifiedClassName();
+		int idx = qClassName.lastIndexOf('.');
+		String className = qClassName.substring(idx + 1, qClassName.length());
+		return className;
 	}
 }
