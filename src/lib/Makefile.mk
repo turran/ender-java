@@ -8,6 +8,7 @@ $(top_srcdir)/src/lib/Ender.java \
 $(top_srcdir)/src/lib/Notation.java \
 $(top_srcdir)/src/lib/Case.java \
 $(top_srcdir)/src/lib/Item.java \
+$(top_srcdir)/src/lib/ItemDef.java \
 $(top_srcdir)/src/lib/ItemEnum.java \
 $(top_srcdir)/src/lib/ItemAttr.java \
 $(top_srcdir)/src/lib/ItemAttrFlag.java \
@@ -18,6 +19,7 @@ $(top_srcdir)/src/lib/ItemBasic.java \
 $(top_srcdir)/src/lib/ItemObject.java \
 $(top_srcdir)/src/lib/ItemFunction.java \
 $(top_srcdir)/src/lib/ItemFunctionFlag.java \
+$(top_srcdir)/src/lib/ItemStruct.java \
 $(top_srcdir)/src/lib/ItemType.java \
 $(top_srcdir)/src/lib/ItemTransfer.java \
 $(top_srcdir)/src/lib/Lib.java \
