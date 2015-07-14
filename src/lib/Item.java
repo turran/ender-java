@@ -8,6 +8,8 @@ import org.ender.common.EnderNative;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 import com.sun.jna.Pointer;
 import com.sun.jna.Library;
@@ -115,5 +117,64 @@ public abstract class Item extends ReferenceableObject {
 	public Pointer getHandle()
 	{
 		return this.raw;
+	}
+
+	// enesim.renderer.dispamp => enesim.RendererDispmap
+	// enesim.log => enesim.Log
+	public String getQualifiedClassName()
+	{
+		String name = getName();
+		String[] parts = name.split("\\.");
+		String prefix = parts[0];
+		int prefixIdx = 1;
+
+		// TODO Do a search from the right most .
+		// Find the prefix
+		while (getLib().findItem(prefix) == null && prefixIdx < parts.length - 1)
+		{
+			prefix += "." + parts[prefixIdx];
+			prefixIdx++;
+		}
+
+		// Sanitize the prefix
+		String[] prefixParts = prefix.split("\\.");
+		if (prefixParts[0].equals(getLib().getName()))
+		{
+			if (prefixParts.length > 1)
+			{
+				StringBuilder sb = new StringBuilder();
+				sb.append(prefixParts[1]);
+				for (int i = 2; i < prefixParts.length; i++)
+				{
+					sb.append(".");
+					sb.append(prefixParts[i]);
+				}
+				prefix = sb.toString();
+			}
+			else
+			{
+				prefix = null;
+			}
+		}
+
+		// Create the class name
+		StringBuilder sb = new StringBuilder();
+		sb.append(parts[prefixIdx]);
+		for (int i = prefixIdx + 1; i < parts.length; i++)
+		{
+			sb.append(".");
+			sb.append(parts[i]);
+		}
+		String className = sb.toString().toUpperCase();
+
+		System.out.println("prefix found " + prefix + " for " + name);
+		System.out.println("class found " + className);
+
+		return name;
+	}
+
+	public String getClassName()
+	{
+		return null;
 	}
 }

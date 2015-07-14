@@ -6,6 +6,7 @@ import org.ender.*;
 import java.util.List;
 import java.io.File;
 import java.io.IOException;
+
 import com.sun.codemodel.JCodeModel;
 import com.sun.codemodel.JClass;
 import com.sun.codemodel.JDefinedClass;
@@ -19,14 +20,13 @@ public class ender2java {
 	{
 		List<ItemFunction> functions = o.getFunctions();
 		try {
-			JDefinedClass cls = cm._class("org." + lib.getName() + "." + o.getName());
+			JDefinedClass cls = cm._class("org." + lib.getName() + "." + o.getQualifiedClassName());
 			ItemObject parent = o.getInherit();
 			if (parent != null)
 			{
-				JClass parentCls = cm.ref("org." + lib.getName() + "." + parent.getName());
+				JClass parentCls = cm.ref("org." + lib.getName() + "." + parent.getQualifiedClassName());
 				cls._extends(parentCls);
 			}
-
 		} catch (JClassAlreadyExistsException ex) {
 			ex.printStackTrace();
 		}

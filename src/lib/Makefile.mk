@@ -5,6 +5,8 @@ $(top_srcdir)/src/lib/common/EnderNative.java \
 $(top_srcdir)/src/lib/common/EnderTypeConverter.java \
 $(top_srcdir)/src/lib/common/ReferenceableObject.java \
 $(top_srcdir)/src/lib/Ender.java \
+$(top_srcdir)/src/lib/Notation.java \
+$(top_srcdir)/src/lib/Case.java \
 $(top_srcdir)/src/lib/Item.java \
 $(top_srcdir)/src/lib/ItemEnum.java \
 $(top_srcdir)/src/lib/ItemAttr.java \
