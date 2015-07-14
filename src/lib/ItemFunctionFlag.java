@@ -16,4 +16,9 @@ public enum ItemFunctionFlag {
 	{
 		this.val = val;
 	}
+
+	public int getValue()
+	{
+		return this.val;
+	}
 }
