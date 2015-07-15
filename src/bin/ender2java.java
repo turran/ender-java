@@ -3,14 +3,22 @@
 
 import org.ender.*;
 
+import org.ender.common.annotations.Transfer;
+
 import java.util.List;
 import java.io.File;
 import java.io.IOException;
 
+import com.sun.codemodel.JAnnotationUse;
+import com.sun.codemodel.JBlock;
 import com.sun.codemodel.JCodeModel;
+import com.sun.codemodel.JFieldVar;
+import com.sun.codemodel.JMethod;
 import com.sun.codemodel.JMod;
+import com.sun.codemodel.JVar;
 import com.sun.codemodel.JMods;
 import com.sun.codemodel.JClass;
+import com.sun.codemodel.JType;
 import com.sun.codemodel.JDefinedClass;
 import com.sun.codemodel.JClassAlreadyExistsException;
 import com.sun.codemodel.ClassType;
@@ -18,6 +26,93 @@ import com.sun.codemodel.ClassType;
 public class ender2java {
 	private static JCodeModel cm;
 	private static Lib lib;
+
+	public static JType generateBasic(ItemBasic b)
+	{
+		switch (b.getValueType())
+		{
+			case BOOL:
+			return cm.BOOLEAN;
+	
+			case UINT8:
+			case INT8:
+			return cm.CHAR;
+
+			case UINT32:
+			case INT32:
+			return cm.INT;
+
+			case UINT64:
+			case INT64:
+			return cm.LONG;
+
+			case DOUBLE:
+			return cm.DOUBLE;
+
+			case STRING:
+			case POINTER:
+			case SIZE:
+			break;
+		}
+		return cm.VOID;
+	}
+
+	public static JType generateArg(ItemArg arg)
+	{
+		JType ret = cm.VOID;
+		Item type = arg.getType();
+
+		if (type == null)
+			return ret;
+
+		switch (type.getItemType())
+		{
+			case BASIC:
+			ret = generateBasic((ItemBasic)type);
+			break;
+
+			case OBJECT:
+			case DEF:
+			case ENUM:
+			case STRUCT:
+			ret = cm.ref(type.getQualifiedClassName());
+			break;
+
+			default:
+			break;
+		}
+		return ret;
+	}
+
+	public static JMethod generatePinvoke(ItemFunction f, JDefinedClass cls)
+	{
+		//int mods = JMod.NONE;
+		//if ((flags & ItemFunctionFlag.IS_METHOD.getValue()) == ItemFunctionFlag.IS_METHOD.getValue())
+		//	mods |= JMod.STATIC;
+
+		ItemArg retItem = f.getRet();
+		JType ret = cm.VOID;
+
+		if (retItem != null)
+		{
+			ret = generateArg(retItem);
+		}
+		JMethod method = cls.method(JMod.PUBLIC, ret, f.getName());
+		if (retItem != null && retItem.getTransfer() == ItemTransfer.FULL)
+		{
+			JAnnotationUse ann = method.annotate(Transfer.class);
+			ann.param("value", ItemTransfer.FULL);
+		}
+
+		List<ItemArg> args = f.getArgs();
+		for (int i = 0; i < args.size(); i++)
+		{
+			ItemArg arg = args.get(i);
+			JVar param = method.param(generateArg(arg), arg.getName());
+		}
+
+		return method;
+	}
 
 	public static void generateObject(ItemObject o)
 	{
@@ -50,10 +145,34 @@ public class ender2java {
 			}
 
 			JDefinedClass cls = cm._class(mods, "org." + o.getQualifiedClassName(), ClassType.CLASS);
+			// Add the API interface
+			JDefinedClass api = cls._class(JMod.PUBLIC, "API", ClassType.INTERFACE);
+			// Add every jna function
+			for (int j = 0; j < functions.size(); j++)
+			{
+				JMethod f = generatePinvoke(functions.get(j), api);
+			}
+
+			api._implements(cm.ref("com.sun.jna.Library"));
 			if (ref != null && unref != null)
 			{
-				JClass referenceableCls = cm.ref("org.ender.common.ReferenceableObject");
-				cls._implements(referenceableCls);
+				cls._implements(cm.ref("org.ender.common.ReferenceableObject"));
+				// Add the private member handle
+				JFieldVar field = cls.field(JMod.PRIVATE, cm.ref("com.sun.jna.Pointer"), "handle");
+				// Add the Referenceable overrides (ref, unref, getHandle)
+				JMethod method = cls.method(JMod.PUBLIC, cm.VOID, "ref");
+				method.annotate(Override.class);
+				JBlock body = method.body();
+
+				method = cls.method(JMod.PUBLIC, cm.VOID, "unref");
+				method.annotate(Override.class);
+
+				method = cls.method(JMod.PUBLIC, cm.ref("com.sun.jna.Pointer"), "getHandle");
+				method.annotate(Override.class);
+				body = method.body();
+				body._return(field);
+				
+				// Add the constructor 
 			}
 
 			ItemObject parent = o.getInherit();
