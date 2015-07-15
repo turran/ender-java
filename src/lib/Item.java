@@ -6,11 +6,6 @@ import org.ender.common.annotations.Transfer;
 
 import org.ender.common.EnderNative;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.ArrayList;
-import java.util.Arrays;
-
 import com.sun.jna.Pointer;
 import com.sun.jna.Library;
 
@@ -57,12 +52,28 @@ public abstract class Item extends ReferenceableObject {
 			i = new ItemBasic(raw, doRef);
 			break;
 
+			case DEF:
+			i = new ItemDef(raw, doRef);
+			break;
+
+			case ARG:
+			i = new ItemArg(raw, doRef);
+			break;
+
+			case ENUM:
+			i = new ItemEnum(raw, doRef);
+			break;
+
 			case OBJECT:
 			i = new ItemObject(raw, doRef);
 			break;
 
 			case FUNCTION:
 			i = new ItemFunction(raw, doRef);
+			break;
+
+			case STRUCT:
+			i = new ItemStruct(raw, doRef);
 			break;
 
 			default:
