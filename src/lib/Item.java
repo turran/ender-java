@@ -150,6 +150,15 @@ public abstract class Item extends ReferenceableObject {
 			className = newClassName + oldClassName;
 		}
 
+		int fromIndex = 0;
+		while ((idx = className.indexOf("_", fromIndex)) != -1)
+		{
+				className = className.substring(0, idx) +
+						className.substring(idx + 1, idx + 2).toUpperCase() +
+						className.substring(idx + 2, className.length());
+				fromIndex = idx;
+		}
+
 		className = className.substring(0, 1).toUpperCase() + className.substring(1, className.length());
 		return prefix + "." + className;
 	}
