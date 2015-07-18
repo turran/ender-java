@@ -75,7 +75,7 @@ public class ender2java {
 			case DEF:
 			case ENUM:
 			case STRUCT:
-			ret = cm.ref(type.getQualifiedClassName());
+			ret = cm.ref("org." + type.getQualifiedClassName());
 			break;
 
 			default:
@@ -92,12 +92,25 @@ public class ender2java {
 
 		ItemArg retItem = f.getRet();
 		JType ret = cm.VOID;
+		String name;
+
+		Item parent = f.getParent();
+
+		if (parent == null)
+		{
+			name = lib.getName() + "_" + f.getName();
+		}
+		else
+		{
+			name = parent.getName() + "_" + f.getName();
+			name = name.replace(".", "_");
+		}
 
 		if (retItem != null)
 		{
 			ret = generateArg(retItem);
 		}
-		JMethod method = cls.method(JMod.PUBLIC, ret, f.getName());
+		JMethod method = cls.method(JMod.PUBLIC, ret, name);
 		if (retItem != null && retItem.getTransfer() == ItemTransfer.FULL)
 		{
 			JAnnotationUse ann = method.annotate(Transfer.class);
@@ -112,6 +125,17 @@ public class ender2java {
 		}
 
 		return method;
+	}
+
+	public static void generateEnum(ItemEnum o)
+	{
+		try {
+			int mods = JMod.NONE;
+
+			JDefinedClass cls = cm._class(mods, "org." + o.getQualifiedClassName(), ClassType.ENUM);
+		} catch (JClassAlreadyExistsException ex) {
+			ex.printStackTrace();
+		}
 	}
 
 	public static void generateObject(ItemObject o)
@@ -184,7 +208,6 @@ public class ender2java {
 		} catch (JClassAlreadyExistsException ex) {
 			ex.printStackTrace();
 		}
-
 	}
 
 	public static void main(String[] args)
@@ -209,6 +232,13 @@ public class ender2java {
 		{
 			ItemObject o = (ItemObject)objects.get(i);
 			generateObject(o);
+		}
+
+		List<Item> enums = lib.listItem(ItemType.ENUM);
+		for (int i = 0; i < enums.size(); i++)
+		{
+			ItemEnum o = (ItemEnum)enums.get(i);
+			generateEnum(o);
 		}
 
 		try {
