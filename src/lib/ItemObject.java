@@ -135,5 +135,11 @@ public class ItemObject extends Item {
 			JClass parentCls = cm.ref(parent.managedType(gen).fullName());
 			cls._extends(parentCls);
 		}
+
+		// Add every method/function
+		for (int j = 0; j < functions.size(); j++)
+		{
+			functions.get(j).generate(gen, cls);
+		}
 	}
 }

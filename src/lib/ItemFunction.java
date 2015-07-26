@@ -80,9 +80,6 @@ public class ItemFunction extends Item {
 	public JMethod generatePinvoke(Generator gen, JDefinedClass cls)
 	{
 		JCodeModel cm = gen.cm;
-		//int mods = JMod.NONE;
-		//if ((flags & ItemFunctionFlag.IS_METHOD.getValue()) == ItemFunctionFlag.IS_METHOD.getValue())
-		//	mods |= JMod.STATIC;
 
 		ItemArg retItem = getRet();
 		JType ret = cm.VOID;
@@ -120,5 +117,52 @@ public class ItemFunction extends Item {
 
 		return method;
 
+	}
+
+	public void generate(Generator gen, JDefinedClass cls)
+	{
+		JCodeModel cm = gen.cm;
+		JMethod method = null;
+		int mods = JMod.PUBLIC;
+		int startParam = 0;
+
+		// The return type
+		ItemArg retItem = getRet();
+		JType ret = cm.VOID;
+		if (retItem != null)
+		{
+			ret = retItem.managedType(gen);
+		}
+
+		// The constructors
+		if ((getFlags() & ItemFunctionFlag.CTOR.getValue()) == ItemFunctionFlag.CTOR.getValue())
+		{
+			method = cls.constructor(mods);
+		}
+		else if ((getFlags() & ItemFunctionFlag.DOWNCAST.getValue()) == ItemFunctionFlag.DOWNCAST.getValue())
+		{
+
+		}
+		// Generic method/function
+		else
+		{
+			if ((getFlags() & ItemFunctionFlag.IS_METHOD.getValue()) != ItemFunctionFlag.IS_METHOD.getValue())
+				mods |= JMod.STATIC;
+			else
+				startParam = 1;
+
+			method = cls.method(mods, ret, getName());
+		}
+
+		if (method == null)
+			return;
+
+		// The params
+		List<ItemArg> args = getArgs();
+		for (int i = startParam; i < args.size(); i++)
+		{
+			ItemArg arg = args.get(i);
+			JVar param = method.param(arg.managedType(gen), arg.getName());
+		}
 	}
 }
