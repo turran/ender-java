@@ -7,6 +7,10 @@ import com.sun.jna.Library;
 
 import com.sun.codemodel.JCodeModel;
 import com.sun.codemodel.JType;
+import com.sun.codemodel.JMod;
+import com.sun.codemodel.JClassAlreadyExistsException;
+import com.sun.codemodel.JDefinedClass;
+import com.sun.codemodel.ClassType;
 
 public class ItemEnum extends Item {
 	private interface API extends Library {
@@ -32,6 +36,14 @@ public class ItemEnum extends Item {
 			ItemArgDirection direction, ItemTransfer transfer)
 	{
 		return managedType(gen);
+	}
+
+	public void generate(Generator gen) throws JClassAlreadyExistsException
+	{
+		JCodeModel cm = gen.cm;
+		int mods = JMod.NONE;
+
+		JDefinedClass cls = cm._class(mods, managedType(gen).fullName(), ClassType.ENUM);
 	}
 }
 

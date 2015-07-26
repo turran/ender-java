@@ -48,10 +48,10 @@ public class ItemBasic extends Item {
 			case DOUBLE:
 			return gen.cm.DOUBLE;
 
-			case STRING:
 			case POINTER:
+			case STRING:
 			case SIZE:
-			break;
+			return gen.cm.ref("com.sun.jna.Pointer");
 		}
 		return gen.cm.VOID;
 	}
@@ -60,6 +60,40 @@ public class ItemBasic extends Item {
 	public JType unmanagedType(Generator gen,
 			ItemArgDirection direction, ItemTransfer transfer)
 	{
-		return managedType(gen);
+		if (direction == ItemArgDirection.OUT)
+		{
+			switch (getValueType())
+			{
+				case BOOL:
+				return gen.cm.ref("com.sun.jna.ptr.ByteByReference");
+		
+				case UINT8:
+				case INT8:
+				return gen.cm.ref("com.sun.jna.ptr.ByteByReference");
+
+				case UINT32:
+				case INT32:
+				return gen.cm.ref("com.sun.jna.ptr.IntByReference");
+
+				case UINT64:
+				case INT64:
+				return gen.cm.ref("com.sun.jna.ptr.LongByReference");
+
+				case DOUBLE:
+				return gen.cm.ref("com.sun.jna.ptr.DoubleByReference");
+
+				case POINTER:
+				return gen.cm.ref("com.sun.jna.ptr.PointerByReference");
+
+				case STRING:
+				case SIZE:
+				default:
+				return gen.cm.VOID;
+			}
+		}
+		else
+		{
+			return managedType(gen);
+		}
 	}
 }
