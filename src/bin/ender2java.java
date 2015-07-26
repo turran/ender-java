@@ -24,65 +24,9 @@ import com.sun.codemodel.JClassAlreadyExistsException;
 import com.sun.codemodel.ClassType;
 
 public class ender2java {
+	private static Generator gen;
 	private static JCodeModel cm;
 	private static Lib lib;
-
-	public static JType generateBasic(ItemBasic b)
-	{
-		switch (b.getValueType())
-		{
-			case BOOL:
-			return cm.BOOLEAN;
-	
-			case UINT8:
-			case INT8:
-			return cm.CHAR;
-
-			case UINT32:
-			case INT32:
-			return cm.INT;
-
-			case UINT64:
-			case INT64:
-			return cm.LONG;
-
-			case DOUBLE:
-			return cm.DOUBLE;
-
-			case STRING:
-			case POINTER:
-			case SIZE:
-			break;
-		}
-		return cm.VOID;
-	}
-
-	public static JType generateArg(ItemArg arg)
-	{
-		JType ret = cm.VOID;
-		Item type = arg.getType();
-
-		if (type == null)
-			return ret;
-
-		switch (type.getItemType())
-		{
-			case BASIC:
-			ret = generateBasic((ItemBasic)type);
-			break;
-
-			case OBJECT:
-			case DEF:
-			case ENUM:
-			case STRUCT:
-			ret = cm.ref("org." + type.getQualifiedClassName());
-			break;
-
-			default:
-			break;
-		}
-		return ret;
-	}
 
 	public static JMethod generatePinvoke(ItemFunction f, JDefinedClass cls)
 	{
@@ -108,7 +52,7 @@ public class ender2java {
 
 		if (retItem != null)
 		{
-			ret = generateArg(retItem);
+			ret = retItem.unmanagedType(gen, retItem.getDirection(), retItem.getTransfer());
 		}
 		JMethod method = cls.method(JMod.PUBLIC, ret, name);
 		if (retItem != null && retItem.getTransfer() == ItemTransfer.FULL)
@@ -121,7 +65,7 @@ public class ender2java {
 		for (int i = 0; i < args.size(); i++)
 		{
 			ItemArg arg = args.get(i);
-			JVar param = method.param(generateArg(arg), arg.getName());
+			JVar param = method.param(arg.unmanagedType(gen, arg.getDirection(), arg.getTransfer()), arg.getName());
 		}
 
 		return method;
@@ -132,7 +76,7 @@ public class ender2java {
 		try {
 			int mods = JMod.NONE;
 
-			JDefinedClass cls = cm._class(mods, "org." + o.getQualifiedClassName(), ClassType.ENUM);
+			JDefinedClass cls = cm._class(mods, o.managedType(gen).fullName(), ClassType.ENUM);
 		} catch (JClassAlreadyExistsException ex) {
 			ex.printStackTrace();
 		}
@@ -168,7 +112,7 @@ public class ender2java {
 				mods |= JMod.ABSTRACT;
 			}
 
-			JDefinedClass cls = cm._class(mods, "org." + o.getQualifiedClassName(), ClassType.CLASS);
+			JDefinedClass cls = cm._class(mods, o.managedType(gen).fullName(), ClassType.CLASS);
 			// Add the API interface
 			JDefinedClass api = cls._class(JMod.PUBLIC, "API", ClassType.INTERFACE);
 			// Add every jna function
@@ -202,7 +146,7 @@ public class ender2java {
 			ItemObject parent = o.getInherit();
 			if (parent != null)
 			{
-				JClass parentCls = cm.ref("org." + parent.getQualifiedClassName());
+				JClass parentCls = cm.ref(parent.managedType(gen).fullName());
 				cls._extends(parentCls);
 			}
 		} catch (JClassAlreadyExistsException ex) {
@@ -224,7 +168,11 @@ public class ender2java {
 			System.out.println("Dep: " + dependencies.get(i).getName());
 		}
 
+		gen = new Generator();
 		cm = new JCodeModel();
+
+		gen.cm = cm;
+		gen.prefix = "org";
 
 		// Generate objects
 		List<Item> objects = lib.listItem(ItemType.OBJECT);

@@ -9,6 +9,9 @@ import org.ender.common.EnderNative;
 import com.sun.jna.Pointer;
 import com.sun.jna.Library;
 
+import com.sun.codemodel.JCodeModel;
+import com.sun.codemodel.JType;
+
 public abstract class Item extends ReferenceableObject {
 
 	public interface API extends Library {
@@ -170,4 +173,8 @@ public abstract class Item extends ReferenceableObject {
 		String className = qClassName.substring(idx + 1, qClassName.length());
 		return className;
 	}
+
+	public abstract JType managedType(Generator gen);
+	public abstract JType unmanagedType(Generator gen,
+			ItemArgDirection direction, ItemTransfer transfer);
 }

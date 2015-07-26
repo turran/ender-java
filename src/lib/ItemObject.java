@@ -8,6 +8,9 @@ import java.util.List;
 import com.sun.jna.Pointer;
 import com.sun.jna.Library;
 
+import com.sun.codemodel.JCodeModel;
+import com.sun.codemodel.JType;
+
 public class ItemObject extends Item {
 	private interface API extends Library {
 		//Eina_Bool ender_item_object_string_to(Ender_Item *i, void *o, char **str,
@@ -39,5 +42,18 @@ public class ItemObject extends Item {
 	{
 		org.eina.List list = api.ender_item_object_functions_get(this);
 		return EnderNative.einaListToList(list, ItemFunction.class, ItemTransfer.FULL);
+	}
+
+	@Override
+	public JType managedType(Generator gen)
+	{
+		return gen.cm.ref(gen.prefix + "." + getQualifiedClassName());
+	}
+
+	@Override
+	public JType unmanagedType(Generator gen,
+			ItemArgDirection direction, ItemTransfer transfer)
+	{
+		return managedType(gen);
 	}
 }

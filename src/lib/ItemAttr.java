@@ -5,6 +5,9 @@ import org.ender.common.EnderNative;
 import com.sun.jna.Pointer;
 import com.sun.jna.Library;
 
+import com.sun.codemodel.JCodeModel;
+import com.sun.codemodel.JType;
+
 public class ItemAttr extends Item {
 	private interface API extends Library {
 		//EAPI Ender_Item * ender_item_attr_type_get(Ender_Item *i);
@@ -23,6 +26,19 @@ public class ItemAttr extends Item {
 	public ItemAttr(Pointer raw, boolean doRef)
 	{
 		super(raw, doRef);
+	}
+
+	@Override
+	public JType managedType(Generator gen)
+	{
+		return gen.cm.VOID;
+	}
+
+	@Override
+	public JType unmanagedType(Generator gen,
+			ItemArgDirection direction, ItemTransfer transfer)
+	{
+		return gen.cm.VOID;
 	}
 }
 

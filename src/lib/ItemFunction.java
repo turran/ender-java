@@ -8,6 +8,9 @@ import java.util.List;
 import com.sun.jna.Pointer;
 import com.sun.jna.Library;
 
+import com.sun.codemodel.JCodeModel;
+import com.sun.codemodel.JType;
+
 public class ItemFunction extends Item {
 	private interface API extends Library {
 		@Transfer(ItemTransfer.FULL)
@@ -54,5 +57,18 @@ public class ItemFunction extends Item {
 	public ItemArg getRet()
 	{
 		return api.ender_item_function_ret_get(this);
+	}
+
+	@Override
+	public JType managedType(Generator gen)
+	{
+		return gen.cm.VOID;
+	}
+
+	@Override
+	public JType unmanagedType(Generator gen,
+			ItemArgDirection direction, ItemTransfer transfer)
+	{
+		return gen.cm.VOID;
 	}
 }

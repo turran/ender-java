@@ -6,6 +6,9 @@ import org.ender.common.annotations.Transfer;
 import com.sun.jna.Pointer;
 import com.sun.jna.Library;
 
+import com.sun.codemodel.JCodeModel;
+import com.sun.codemodel.JType;
+
 public class ItemArg extends Item {
 	private interface API extends Library {
 		@Transfer(ItemTransfer.FULL)
@@ -40,5 +43,31 @@ public class ItemArg extends Item {
 	public int getFlags()
 	{
 		return api.ender_item_arg_flags_get(this);
+	}
+
+	@Override
+	public JType managedType(Generator gen)
+	{
+		JType ret = gen.cm.VOID;
+		Item type = getType();
+
+		if (type == null)
+			return ret;
+		ret = type.managedType(gen);
+		return ret;
+	}
+
+	@Override
+	public JType unmanagedType(Generator gen,
+			ItemArgDirection direction, ItemTransfer transfer)
+	{
+		JType ret = gen.cm.VOID;
+		Item type = getType();
+
+		if (type == null)
+			return ret;
+
+		ret = type.unmanagedType(gen, direction, transfer);
+		return ret;
 	}
 }

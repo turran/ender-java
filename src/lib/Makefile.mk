@@ -1,4 +1,4 @@
-lib_FLAGS = -cp /usr/share/java/jna.jar
+lib_FLAGS = -cp /usr/share/java/jna.jar:/usr/share/java/codemodel.jar
 
 lib_BIN = Ender.jar
 lib_SRC = \
@@ -9,6 +9,7 @@ $(top_srcdir)/src/lib/common/ReferenceableObject.java \
 $(top_srcdir)/src/lib/Ender.java \
 $(top_srcdir)/src/lib/Notation.java \
 $(top_srcdir)/src/lib/Case.java \
+$(top_srcdir)/src/lib/Generator.java \
 $(top_srcdir)/src/lib/Item.java \
 $(top_srcdir)/src/lib/ItemDef.java \
 $(top_srcdir)/src/lib/ItemEnum.java \
